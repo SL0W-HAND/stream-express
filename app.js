@@ -2,31 +2,41 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const thumbsupply = require('thumbsupply');
+const folderPath = require('./folderPath');
+const { getVideoDurationInSeconds } = require('get-video-duration') 
 
-const videos = [
-    {
-        id: 0,
-        poster: '/video/0/poster',
-        duration: '3 mins',
-        name: 'Sample 1'
-    },
-    {
-        id: 1,
-        poster: '/video/1/poster',
-        duration: '4 mins',
-        name: 'Sample 2'
-    },
-    {
-        id: 2,
-        poster: '/video/2/poster',
-        duration: '2 mins',
-        name: 'Sample 3'
-    },
-];
+var videos = [];
+
+fs.readdir(folderPath, function (err, files) {
+    //handling error
+    if (err) {
+        return console.log('Unable to scan directory: ' + err);
+    } 
+    //listing all files using forEach
+    var index = 0;
+    files.forEach((file) => {
+
+        if(path.extname(file) == '.mp4'){
+            var videoPath = path.join(folderPath,file);
+
+            var video = {
+                id:index,
+                name:file,
+                duration:0,
+                path:videoPath//maybe i dont want to send this
+            };
+
+            index ++ ;
+            getVideoDurationInSeconds(videoPath).then(function (duration){
+                video.duration = duration    
+            }).then(
+                videos.push(video)   
+            ) 
+        }
+    });
+});
 
 const cors = require('cors');
-
-
 
 const app = express();
 
@@ -43,7 +53,7 @@ app.get('/video/:id/data', (req, res) => {
 });
 
 app.get('/video/:id', (req, res) => {
-    const path = `assets/${req.params.id}.mp4`;
+    const path = `assets/${req.params.id}.mp4`;//i need a function to match by id
     const stat = fs.statSync(path);
     const fileSize = stat.size;
     const range = req.headers.range;
@@ -79,5 +89,5 @@ app.get('/video/:id/poster', (req, res) => {
 });
 */
 app.listen(4000, () => {
-    console.log('Listening on port 4000!')
+    console.log('Listening on port 4000!');
 });
