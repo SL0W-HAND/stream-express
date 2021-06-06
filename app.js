@@ -3,7 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const thumbsupply = require('thumbsupply');
 const folderPath = require('./folderPath');
-const { getVideoDurationInSeconds } = require('get-video-duration') 
+const { getVideoDurationInSeconds } = require('get-video-duration');
+const cors = require('cors'); 
 
 var videos = [];
 
@@ -13,48 +14,40 @@ fs.readdir(folderPath, function (err, files) {
         return console.log('Unable to scan directory: ' + err);
     } 
     //listing all files using forEach
-    var index = 0;
+    let index = 0;
     files.forEach((file) => {
 
         if(path.extname(file) == '.mp4'){
             var videoPath = path.join(folderPath,file);
-
             var video = {
                 id:index,
                 name:file,
                 duration:0,
-                path:videoPath//maybe i dont want to send this
             };
 
             index ++ ;
             getVideoDurationInSeconds(videoPath).then(function (duration){
-                video.duration = duration    
-            }).then(
-                videos.push(video)   
-            ) 
-        }
+                video.duration = duration;    
+            }).then(videos.push(video))
+        };
     });
 });
-
-const cors = require('cors');
 
 const app = express();
 
 app.use(cors());
+
 app.get('/videos', (req, res) => res.json(videos));
-/*
-app.get('/video', (req, res) => {
-    res.sendFile('assets/sample.mp4', { root: __dirname });
-});
-*/
+
 app.get('/video/:id/data', (req, res) => {
     const id = parseInt(req.params.id, 10);
     res.json(videos[id]);
 });
 
 app.get('/video/:id', (req, res) => {
-    const path = `assets/${req.params.id}.mp4`;//i need a function to match by id
-    const stat = fs.statSync(path);
+    const videoName = videos[req.params.id].name;
+    const pathVideo = `${folderPath}/${videoName}`;
+    const stat = fs.statSync(pathVideo);
     const fileSize = stat.size;
     const range = req.headers.range;
     if (range) {
@@ -64,7 +57,7 @@ app.get('/video/:id', (req, res) => {
             ? parseInt(parts[1], 10)
             : fileSize-1;
         const chunksize = (end-start) + 1;
-        const file = fs.createReadStream(path, {start, end});
+        const file = fs.createReadStream(pathVideo, {start, end});
         const head = {
             'Content-Range': `bytes ${start}-${end}/${fileSize}`,
             'Accept-Ranges': 'bytes',
@@ -79,15 +72,16 @@ app.get('/video/:id', (req, res) => {
             'Content-Type': 'video/mp4',
         };
         res.writeHead(200, head);
-        fs.createReadStream(path).pipe(res);
+        fs.createReadStream(pathVideo).pipe(res);
     }
 });
-/*
+
 app.get('/video/:id/poster', (req, res) => {
-    thumbsupply.generateThumbnail(`assets/${req.params.id}.mp4`)
+    const videoName = videos[req.params.id].name;
+    thumbsupply.generateThumbnail(`${folderPath}/${videoName}`)
     .then(thumb => res.sendFile(thumb));
 });
-*/
+
 app.listen(4000, () => {
-    console.log('Listening on port 4000!');
+    console.log('Listening on port 40000!');
 });
