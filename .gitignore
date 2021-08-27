@@ -1,3 +1,4 @@
 /node_modules
-folderPath.js
-/ssr-server
+/dist
+.env
+package-lock.json

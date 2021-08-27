@@ -54,8 +54,7 @@ export const video = async (req: Request, res: Response) => {
     }
   } catch (error) {
     res.status(404).json(null)
-  }
-    
+  } 
 };
 
 export const videoPoster = async (req: Request, res: Response) => {
