@@ -4,30 +4,17 @@ import config from "../config/index";
 
 const secret:any = config.jwtSecret
 
-function createToken(user:any) {
+function createToken() {
     //console.log(secret)
-    return jwt.sign({ name: user.name},secret);
+    return jwt.sign({ auth: true},secret, { expiresIn: '60s' });
 }
 
 export const signIn = async (req: Request, res: Response): Promise<Response> => {
- // console.log(req.body)
-  
-  if (!req.body.name || !req.body.password) {
+
+  if (!req.body.password) {
     return res
       .status(400)
-      .json({ msg: "Please. Send your email and password" });
-  }
-
-  const user = ():boolean => {
-     if (req.body.name === config.user.name) {
-       return true
-     } else {
-       return false
-     }
-  }
-
-  if (!user()) {
-    return res.status(400).json({ msg: "The User does not exists" });
+      .json({ msg: "Please. Send your password" });
   }
 
   const isMatch = () => {
@@ -37,18 +24,19 @@ export const signIn = async (req: Request, res: Response): Promise<Response> => 
       return false
     }
   }
+
   if (isMatch()) {
-    let token = createToken(config.user)
-    return res.status(200).json({ 
-      user:{
-        name:req.body.name,
-        auth:true
-      },
-      token:token 
-    });
+    let token = createToken()
+    return res.status(200).cookie('token',token,{
+      httpOnly: false,
+      secure: false,
+    }).json({ 
+      auth:true
+    })
   }
 
   return res.status(400).json({
-    msg: "The email or password are incorrect"
+    msg: "The password are incorrect",
+    auth: false
   });
 };

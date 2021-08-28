@@ -24,6 +24,17 @@ class Database {
         await randomDelay()
         return entry
     }
+    async getByString(str: string): Promise<TypeVideo[]| null> {
+        if(str.length === 0) {
+            return null
+        }
+        const asArray:TypeVideo[] = Object.values(allData)
+        const results = asArray.filter((data:TypeVideo) => {
+          return data.name.toLowerCase().includes(str);
+        });
+        await randomDelay()
+        return results
+    }
 }
 
 // Let's also add a delay to make it a bit closer to reality

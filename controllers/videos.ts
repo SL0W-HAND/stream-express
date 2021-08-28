@@ -17,7 +17,7 @@ export const allVideos = async (req: Request, res: Response) => {
 export const videoData = async(req: Request, res: Response) => {
   const data = await db.getById(req.params.id)
   //console.log(data)
-  return res.status(200).json(data);
+  return res.status(200).json(data)
 };
 
 export const video = async (req: Request, res: Response) => {
@@ -66,3 +66,9 @@ export const videoPoster = async (req: Request, res: Response) => {
     res.status(404).json(null)
   }
 };
+
+export const searchVideos = async (req: Request, res: Response) => {
+  console.log(req.params.query)
+  const results = await db.getByString(req.params.query)
+  return res.json(results)
+}

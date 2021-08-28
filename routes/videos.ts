@@ -3,7 +3,7 @@ import passport from "passport";
 
 const router = Router();
 
-import { allVideos,  videoData, video, videoPoster } from "../controllers/videos";
+import { allVideos,  videoData, video, videoPoster, searchVideos } from "../controllers/videos";
 
 router.get(
   "/videos",
@@ -19,14 +19,20 @@ router.get(
 
 router.get(
   "/video/:id",
-  //passport.authenticate("jwt",{session:false}),
+  passport.authenticate("jwt",{session:false}),
   video
 )
 
 router.get(
   "/video/:id/poster",
-  //passport.authenticate("jwt",{session:false}),
+  passport.authenticate("jwt",{session:false}),
   videoPoster
+)
+
+router.get(
+  "/videos/search/:query",
+  passport.authenticate("jwt",{session:false}),
+  searchVideos
 )
 
 export default router;
