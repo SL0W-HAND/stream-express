@@ -1,2 +1,4 @@
 /node_modules
-folderPath.js
+/dist
+.env
+package-lock.json
