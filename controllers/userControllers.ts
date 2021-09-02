@@ -28,8 +28,8 @@ export const signIn = async (req: Request, res: Response): Promise<Response> => 
   if (isMatch()) {
     let token = createToken()
     return res.status(200).cookie('token',token,{
-      httpOnly: false,
-      secure: false,
+      httpOnly: !config.dev,
+      secure: !config.dev,
     }).json({ 
       auth:true
     })

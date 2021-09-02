@@ -9,9 +9,19 @@ const thumbsupply = require('thumbsupply');
 
 const db = new DB()
 
-export const allVideos = async (req: Request, res: Response) => {
-  const allEntries = await db.getAll()
-  return res.json(allEntries);
+export const pageVideos = async (req: Request, res: Response) => {
+  const allEntries = await db.getPages()
+  if (!parseInt(req.params.page)) {
+    return res.json('bad request')
+  }
+  
+  if (parseInt(req.params.page)-1 > allEntries[0].total_pages || parseInt(req.params.page)-1 < 0) {
+    return res.json('bad request')  
+  }
+  
+  const page = allEntries[parseInt(req.params.page)-1]
+  
+  return res.json(page);
 };
 
 export const videoData = async(req: Request, res: Response) => {

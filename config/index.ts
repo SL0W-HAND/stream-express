@@ -5,8 +5,8 @@ export default {
   jwtSecret: process.env.JWT_SECRET,
   folderPath: process.env.FOLDER_PATH||'c:',
   user:{
-      name:process.env.USER_NAME,
       password:process.env.USER_PASSWORD
-  }
+  },
+  dev : process.env.DEV_MODE || false,
 };
 
