@@ -3,7 +3,7 @@ import config from "../../config/index";
 
 var cookieExtractor = function(req:any) {
   var token = null;
-  console.log(req.cookies);
+  //console.log(req.cookies);
   if (req && req.cookies)
   {
       token = req.cookies['token'];

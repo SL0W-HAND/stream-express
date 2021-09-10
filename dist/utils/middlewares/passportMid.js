@@ -7,7 +7,7 @@ const passport_jwt_1 = require("passport-jwt");
 const index_1 = __importDefault(require("../../config/index"));
 var cookieExtractor = function (req) {
     var token = null;
-    console.log(req.cookies);
+    //console.log(req.cookies);
     if (req && req.cookies) {
         token = req.cookies['token'];
     }

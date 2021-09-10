@@ -87,7 +87,7 @@ const videoPoster = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.videoPoster = videoPoster;
 const searchVideos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.params.query);
+    //console.log(req.params.query)
     const results = yield db.getByString(req.params.query);
     return res.json(results);
 });

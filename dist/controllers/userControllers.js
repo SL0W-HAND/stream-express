@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.signIn = void 0;
+exports.refreshToken = exports.signIn = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const index_1 = __importDefault(require("../config/index"));
 const secret = index_1.default.jwtSecret;
@@ -49,3 +49,13 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     });
 });
 exports.signIn = signIn;
+const refreshToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let token = createToken();
+    return res.status(200).cookie('token', token, {
+        httpOnly: !index_1.default.dev,
+        secure: !index_1.default.dev,
+    }).json({
+        auth: true
+    });
+});
+exports.refreshToken = refreshToken;

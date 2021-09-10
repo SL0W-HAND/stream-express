@@ -78,7 +78,7 @@ export const videoPoster = async (req: Request, res: Response) => {
 };
 
 export const searchVideos = async (req: Request, res: Response) => {
-  console.log(req.params.query)
+  //console.log(req.params.query)
   const results = await db.getByString(req.params.query)
   return res.json(results)
 }

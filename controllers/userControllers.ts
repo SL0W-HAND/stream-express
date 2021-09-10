@@ -40,3 +40,13 @@ export const signIn = async (req: Request, res: Response): Promise<Response> => 
     auth: false
   });
 };
+
+export const refreshToken = async (req: Request, res: Response): Promise<Response> => {
+  let token = createToken()
+  return res.status(200).cookie('token',token,{
+    httpOnly: !config.dev,
+    secure: !config.dev,
+  }).json({ 
+    auth:true
+  });
+};
