@@ -1,10 +1,10 @@
 type IUser = {
-    name:number,
-    password:string
-}
+	name: number;
+	password: string;
+};
 
-type TypeVideo ={
-    id: number,
-    name: string,
-    duration: number
-}
+type TypeVideo = {
+	id: number;
+	name: string;
+	duration: number;
+};
