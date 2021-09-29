@@ -7,7 +7,8 @@
 		"test": " npm run build && jest",
 		"build": "tsc --project ./",
 		"start": "node ./dist/index.js",
-		"dev": "npx nodemon"
+		"dev": "npx nodemon",
+		"secret": "node ./scripts/generateSecret.js"
 	},
 	"jest": {
 		"testEnvironment": "node",

@@ -22,7 +22,6 @@ function chunkArray(myArray: any, chunk_size: number): pageVideos[] {
 	let pageNumber = 1;
 	for (index = 0; index < arrayLength; index += chunk_size) {
 		let myChunk = myArray.slice(index, index + chunk_size);
-		// Do something if you want with the group
 		let page: pageVideos = {
 			page: pageNumber,
 			total_pages: Math.ceil(arrayLength / chunk_size),
