@@ -6,8 +6,19 @@ import passportMiddleware from './utils/middlewares/passportMid';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 
+//----------------experimental things---------------------
+import { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+
+const secret: any = config.jwtSecret;
+
+function createToken() {
+	//console.log(secret)
+	return jwt.sign({ auth: true }, secret, { expiresIn: '600s' });
+}
+
+//
 //import routes
-import authRoute from './routes/auth';
 import videoRoute from './routes/videos';
 
 const app = express();
@@ -36,8 +47,60 @@ app.get('/', (req, res) => {
 });
 
 //Routes
-app.use(authRoute);
 app.use(videoRoute);
+app.post('/example', (req, res) => {
+	res.cookie('lol', 'example').json({
+		message: 'example',
+	});
+});
+app.post('/login', (req: Request, res: Response, next) => {
+	if (!req.body.password) {
+		res.cookie('token', { maxAge: 0 })
+			.status(400)
+			.json({ msg: 'Please. Send your password' });
+	}
+
+	const isMatch = () => {
+		if (req.body.password === config.user.password) {
+			return true;
+		} else {
+			return false;
+		}
+	};
+	if (isMatch()) {
+		let token = createToken();
+		res.cookie('token', token, {
+			httpOnly: true,
+			secure: false,
+			maxAge: 1000 * 60 * 15,
+		}).json({
+			auth: true,
+		});
+	} else {
+		res.cookie('token', { maxAge: 0 }).status(400).json({
+			msg: 'The password are incorrect',
+			auth: false,
+		});
+	}
+	next();
+});
+
+app.get(
+	'/refresh_token',
+	passport.authenticate('jwt', { session: false }),
+	(req, res, next) => {
+		let token = createToken();
+		res.cookie('token', token, {
+			httpOnly: true,
+			secure: false,
+		})
+			.json({
+				auth: true,
+			})
+			.status(200);
+		next();
+	}
+);
 
 //export default app
 module.exports = app;

@@ -4,10 +4,10 @@ const app = require('../dist/app');
 
 var token = '';
 describe('User Routes', () => {
-	test('POST /signin', async () => {
+	test('POST /login', async () => {
 		const password = config.default.user.password;
 		const res = await request(app)
-			.post('/signin')
+			.post('/login')
 			.send({ password: password });
 
 		token = res.header['set-cookie'][0].split(';')[0].split('=')[1];
