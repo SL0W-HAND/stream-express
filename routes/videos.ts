@@ -61,4 +61,6 @@ router.get(
 	passport.authenticate('jwt', { session: false }),
 	searchResuts
 );
+
+
 export default router;

@@ -1,31 +1,26 @@
-import express from 'express';
+import express,{ Request, Response } from 'express';
 import passport from 'passport';
 import cors from 'cors';
-import config from './config/index';
-import passportMiddleware from './utils/middlewares/passportMid';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-
-//----------------experimental things---------------------
-import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-const secret: any = config.jwtSecret;
+import config from './config/index';
+import passportMiddleware from './utils/middlewares/passportMid';
+
+const secret: string = config.jwtSecret;
 
 function createToken() {
-	//console.log(secret)
 	return jwt.sign({ auth: true }, secret, { expiresIn: '600s' });
 }
+//initialize express
+const app = express();
 
-//
 //import routes
 import videoRoute from './routes/videos';
 
-const app = express();
-
 //settings
 app.set('port', config.port);
-//app.options('/signin',cors)
 
 //middlewares
 app.use(
@@ -41,10 +36,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(passport.initialize());
 passport.use(passportMiddleware);
-
-app.get('/', (req, res) => {
-	return res.send(`The API is at http://localhost:${app.get('port')}`);
-});
 
 //Routes
 app.use(videoRoute);
@@ -101,6 +92,10 @@ app.get(
 		next();
 	}
 );
+
+app.get('/', (req, res) => {
+	return res.send(`The API is at http://localhost:${app.get('port')}`);
+});
 
 //export default app
 module.exports = app;

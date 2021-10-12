@@ -1,40 +1,57 @@
 import { Request, Response } from 'express';
 //import { DefaultDeserializer } from 'v8';
-import DB from '../database/db';
 import config from '../config/index';
 import fs from 'fs';
 
+import {connect } from 'mongoose';
+import Video from '../Schemas/Video'
+import Page from '../Schemas/Pages'
+
+try {
+	 connect('mongodb://localhost:27017/videodb');
+	 console.log('connected to mongodb');
+  } catch (error) {
+	console.log(error);
+  }
+
 const thumbsupply = require('thumbsupply');
 
-const db = new DB();
-
+//rady to use
 export const pageVideos = async (req: Request, res: Response) => {
-	const allEntries = await db.getPages();
+	//fix for mongo db
 	if (!parseInt(req.params.page)) {
 		return res.json('bad request');
 	}
-
+	/*
 	if (
 		parseInt(req.params.page) - 1 > allEntries[0].total_pages ||
 		parseInt(req.params.page) - 1 < 0
 	) {
 		return res.json('bad request');
 	}
+*/
+	const page = await Page.findOne({ page: parseInt(req.params.page) });
 
-	const page = allEntries[parseInt(req.params.page) - 1];
+	if(page == null){
+		return res.json('bad request');
+	}
 
 	return res.json(page);
 };
-
+//rady to use
 export const videoData = async (req: Request, res: Response) => {
-	const data = await db.getById(req.params.id);
-	//console.log(data)
+	//basic consulting
+	//const data = await db.getById(req.params.id);
+	const data = await Video.findOne({ _id: req.params.id });
+	//console.log(req.params.id);
+	///console.log(data)
 	return res.status(200).json(data);
 };
-
+//ready to use
 export const video = async (req: Request, res: Response) => {
 	try {
-		const videoData = await db.getById(req.params.id);
+		//basic consulting
+		const videoData = await Video.findOne({ _id: req.params.id });
 		const pathVideo = `${config.folderPath}/${videoData?.name}`;
 
 		const stat = fs.statSync(pathVideo);
@@ -66,9 +83,10 @@ export const video = async (req: Request, res: Response) => {
 		res.status(404).json(null);
 	}
 };
-
+//ready to use
 export const videoPoster = async (req: Request, res: Response) => {
-	const video: any = await db.getById(req.params.id);
+	//basic consulatation
+	const video: any = await await Video.findOne({ _id: req.params.id });
 	if (video !== null) {
 		thumbsupply
 			.generateThumbnail(`${config.folderPath}/${video.name}`)
@@ -79,37 +97,48 @@ export const videoPoster = async (req: Request, res: Response) => {
 		res.status(404).json(null);
 	}
 };
-
+//ready to use
 export const searchVideos = async (req: Request, res: Response) => {
-	//console.log(req.params.query)
-	const results = await db.getByString(req.params.query);
-	if (results === null) {
-		return res.json([]);
-	}
-	const response = results[0];
-	if (!response) return res.json([]);
-	return res.json(response.videos);
-};
+	const results = await Video.find({
+		name: { $regex: req.params.query, $options: 'i' },
+	}).sort({ _id: -1 }).limit(10);
 
-export const searchResuts = async (req: Request, res: Response) => {
-	//console.log(req.params.query)
-	const results = await db.getByString(req.params.query);
 	return res.json(results);
+};
+//ready to use
+export const searchResuts = async (req: Request, res: Response) => {
+	const results = await Video.find({
+		name: { $regex: req.params.query, $options: 'i' },
+	}).sort({ _id: -1 }).limit(100);
+
+	const total_pages = Math.ceil(results.length / 10);
+
+	let pages = [];
+	//chunck the results in gorups of 10 and push them into pages
+	for (let i = 0; i < total_pages; i++) {
+		pages.push({
+			"page": i + 1,
+			"total_pages": total_pages,
+			"videos":results.slice(i * 10, (i + 1) * 10)});
+	}
+
+	return res.json(pages[0]);
 };
 
 export const recomendVideos = async (req: Request, res: Response) => {
 	//get a array of max 10 videos without the video that is being requested
-	const allVideos = await db.getAll();
-	const video: any = await db.getById(req.params.id);
-	const videos = allVideos.filter((v: any) => v.id !== video.id);
-	const randomVideos = videos.sort(() => 0.5 - Math.random()).slice(0, 10);
+	const randomVideos = await Video.find({
+		_id: { $ne: req.params.id },
+	}).sort({ _id: -1 }).limit(10);
+
 	return res.json(randomVideos);
 };
 
 export const randomVideo = async (req: Request, res: Response) => {
 	//a random video from the database
-	const allEntries = await db.getAll();
-	const random = Math.floor(Math.random() * allEntries.length);
-	const video = allEntries[random];
+	const video = await Video.findOne({}).sort({ _id: -1 });
+	
 	return res.json(video);
 };
+
+

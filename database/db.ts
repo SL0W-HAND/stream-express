@@ -1,6 +1,11 @@
 // This is not a real database,
 // But let's imagine it is one :)
 import allData from './data';
+import {connect } from 'mongoose';
+
+//Schemas
+import Video from '../Schemas/Video'
+import Page from '../Schemas/Pages'
 
 interface TypeVideo {
 	id: number;
@@ -32,6 +37,8 @@ function chunkArray(myArray: any, chunk_size: number): pageVideos[] {
 	}
 	return tempArray;
 }
+
+
 
 class Database {
 	constructor() {}
