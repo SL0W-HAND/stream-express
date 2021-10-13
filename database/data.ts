@@ -16,7 +16,7 @@ fs.readdir(config.folderPath, function (err, files) {
 		if (path.extname(file) == '.mp4') {
 			let videoPath = path.join(config.folderPath, file);
 			let video = {
-				id: index,
+				_id: index,
 				name: file,
 				duration: 0,
 			};

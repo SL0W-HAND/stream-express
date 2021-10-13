@@ -94,16 +94,27 @@ export const searchVideos = async (req: Request, res: Response) => {
 export const searchResuts = async (req: Request, res: Response) => {
 	//console.log(req.params.query)
 	const results = await db.getByString(req.params.query);
-	return res.json(results);
+	console.log(results)
+	if (results === null) {
+		return res.json([]);}
+
+	return res.json(results[0].videos);
 };
 
 export const recomendVideos = async (req: Request, res: Response) => {
 	//get a array of max 10 videos without the video that is being requested
-	const allVideos = await db.getAll();
-	const video: any = await db.getById(req.params.id);
-	const videos = allVideos.filter((v: any) => v.id !== video.id);
-	const randomVideos = videos.sort(() => 0.5 - Math.random()).slice(0, 10);
-	return res.json(randomVideos);
+
+	console.log(req.params.id);
+	try{
+		const allVideos = await db.getAll();
+		const video: any = await db.getById(req.params.id);
+		const videos = allVideos.filter((v: any) => v._id !== video._id);
+		const randomVideos = videos.sort(() => 0.5 - Math.random()).slice(0, 10);
+		return res.json(randomVideos);
+	}
+	catch(error){
+		return res.status(404).json(null);
+	}
 };
 
 export const randomVideo = async (req: Request, res: Response) => {

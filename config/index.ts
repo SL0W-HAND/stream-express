@@ -7,5 +7,5 @@ export default {
 	user: {
 		password: process.env.USER_PASSWORD,
 	},
-	dev: process.env.DEV_MODE || false,
+	dev: process.env.DEV_MODE || true,
 };

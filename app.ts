@@ -5,32 +5,34 @@ import config from './config/index';
 import passportMiddleware from './utils/middlewares/passportMid';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-
-//----------------experimental things---------------------
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-const secret: any = config.jwtSecret;
-
-function createToken() {
-	//console.log(secret)
-	return jwt.sign({ auth: true }, secret, { expiresIn: '600s' });
-}
-
-//
 //import routes
 import videoRoute from './routes/videos';
+
+const secret: any = config.jwtSecret;
+let dev
+
+if (config.dev == 'true') {
+	dev = true;
+} else {
+	dev = false;
+}
+
+function createToken() {
+	return jwt.sign({ auth: true }, secret, { expiresIn: '600s' });
+}
 
 const app = express();
 
 //settings
 app.set('port', config.port);
-//app.options('/signin',cors)
 
 //middlewares
 app.use(
 	cors({
-		origin: true,
+		origin: dev,
 		methods: ['GET', 'POST'],
 		credentials: true,
 	})
@@ -48,11 +50,6 @@ app.get('/', (req, res) => {
 
 //Routes
 app.use(videoRoute);
-app.post('/example', (req, res) => {
-	res.cookie('lol', 'example').json({
-		message: 'example',
-	});
-});
 app.post('/login', (req: Request, res: Response, next) => {
 	if (!req.body.password) {
 		res.cookie('token', { maxAge: 0 })
@@ -93,6 +90,7 @@ app.get(
 		res.cookie('token', token, {
 			httpOnly: true,
 			secure: false,
+			maxAge: 1000 * 60 * 15,
 		})
 			.json({
 				auth: true,
