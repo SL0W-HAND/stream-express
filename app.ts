@@ -7,8 +7,17 @@ import jwt from 'jsonwebtoken';
 
 import config from './config/index';
 import passportMiddleware from './utils/middlewares/passportMid';
+//import routes
+import videoRoute from './routes/videos';
 
 const secret: string = config.jwtSecret;
+let dev
+
+if (config.dev == 'true') {
+	dev = true;
+} else {
+	dev = false;
+}
 
 function createToken() {
 	return jwt.sign({ auth: true }, secret, { expiresIn: '600s' });
@@ -16,16 +25,13 @@ function createToken() {
 //initialize express
 const app = express();
 
-//import routes
-import videoRoute from './routes/videos';
-
 //settings
 app.set('port', config.port);
 
 //middlewares
 app.use(
 	cors({
-		origin: true,
+		origin: dev,
 		methods: ['GET', 'POST'],
 		credentials: true,
 	})
