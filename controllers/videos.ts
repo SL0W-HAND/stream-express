@@ -149,7 +149,7 @@ export const recomendVideos = async (req: Request, res: Response) => {
 
 		return res.json(randomVideos);
 	} catch {
-		res.status(404).json(null);
+		return res.status(404).json(null);
 	}
 };
 
