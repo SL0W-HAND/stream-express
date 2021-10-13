@@ -1,9 +1,9 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 const VideoSchema = new Schema({
-    //id: {type: Number, required: true},
-    name: {type: String, required: true},
-    duration:{type: Number, required: true}
+	//id: {type: Number, required: true},
+	name: { type: String, required: true },
+	duration: { type: Number, required: true },
 });
 
-export default model("Video", VideoSchema);
+export default model('Video', VideoSchema);

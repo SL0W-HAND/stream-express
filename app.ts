@@ -1,4 +1,4 @@
-import express,{ Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import passport from 'passport';
 import cors from 'cors';
 import morgan from 'morgan';

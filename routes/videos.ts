@@ -62,5 +62,4 @@ router.get(
 	searchResuts
 );
 
-
 export default router;
