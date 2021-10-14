@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-//import { DefaultDeserializer } from 'v8';
 import config from '../config/index';
 import fs from 'fs';
 
@@ -12,11 +11,13 @@ try {
 	console.log('connected to mongodb');
 } catch (error) {
 	console.log(error);
+	console.log('error connecting to mongodb');
+	process.exit(1);
 }
 
 const thumbsupply = require('thumbsupply');
 
-//rady to use
+
 export const pageVideos = async (req: Request, res: Response) => {
 	//fix for mongo db
 	if (!parseInt(req.params.page)) {
@@ -30,9 +31,8 @@ export const pageVideos = async (req: Request, res: Response) => {
 
 	return res.json(page);
 };
-//rady to use
+
 export const videoData = async (req: Request, res: Response) => {
-	//basic consulting
 	//const data = await db.getById(req.params.id);
 	if (!parseInt(req.params.id)) {
 		return res.json('bad request');
@@ -53,7 +53,7 @@ export const videoData = async (req: Request, res: Response) => {
 
 export const video = async (req: Request, res: Response) => {
 	try {
-		//basic consulting
+
 		const videoData = await Video.findOne({ _id: req.params.id });
 		const pathVideo = `${config.folderPath}/${videoData?.name}`;
 
@@ -88,7 +88,7 @@ export const video = async (req: Request, res: Response) => {
 };
 
 export const videoPoster = async (req: Request, res: Response) => {
-	//basic consulatation
+
 	try {
 		const video: any = await await Video.findOne({ _id: req.params.id });
 
@@ -156,6 +156,5 @@ export const recomendVideos = async (req: Request, res: Response) => {
 export const randomVideo = async (req: Request, res: Response) => {
 	//works from test but need to be fixed
 	const video = await Video.findOne({}).sort({ _id: -1 });
-
 	return res.json(video);
 };
