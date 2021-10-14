@@ -4,6 +4,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
+import path from 'path';
 
 import config from './config/index';
 import passportMiddleware from './utils/middlewares/passportMid';
@@ -41,6 +42,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
 app.use(passport.initialize());
+app.use(express.static(path.join(__dirname, 'build')));
 passport.use(passportMiddleware);
 
 //Routes
@@ -100,8 +102,9 @@ app.get(
 );
 
 app.get('/', (req, res) => {
-	return res.send(`The API is at http://localhost:${app.get('port')}`);
+	res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
+
 
 //export default app
 module.exports = app;
