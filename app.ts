@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import path from 'path';
 
 //import routes
 import videoRoute from './routes/videos';
@@ -42,6 +43,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
 app.use(passport.initialize());
+app.use(express.static(path.join(__dirname, 'build')));
 passport.use(passportMiddleware);
 
 app.get('/', (req, res) => {
@@ -50,6 +52,7 @@ app.get('/', (req, res) => {
 
 //Routes
 app.use(videoRoute);
+
 app.post('/login', (req: Request, res: Response, next) => {
 	if (!req.body.password) {
 		res.cookie('token', { maxAge: 0 })
@@ -99,6 +102,10 @@ app.get(
 		next();
 	}
 );
+
+app.get('/',(req,res)=>{
+	res.sendFile(path.join(__dirname, 'build', 'index.html'));
+})
 
 //export default app
 module.exports = app;
