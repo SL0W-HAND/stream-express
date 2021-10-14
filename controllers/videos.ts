@@ -94,11 +94,16 @@ export const searchVideos = async (req: Request, res: Response) => {
 export const searchResuts = async (req: Request, res: Response) => {
 	//console.log(req.params.query)
 	const results = await db.getByString(req.params.query);
-	console.log(results)
+	//console.log(results)
 	if (results === null) {
-		return res.json([]);}
-
-	return res.json(results[0].videos);
+		return res.json([]);
+	}
+	try {
+		return res.json(results[0].videos);
+	} catch (error) {
+		return res.json([]);
+	}
+	
 };
 
 export const recomendVideos = async (req: Request, res: Response) => {
