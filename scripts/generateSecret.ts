@@ -1,4 +1,4 @@
-var crypto = require('crypto');
+import crypto from 'crypto'
 let secret = crypto.randomBytes(64).toString('hex');
 console.log('you can use this string to sign your tokens:');
 console.log('');
