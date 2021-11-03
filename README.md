@@ -3,7 +3,7 @@ Here is the backend for the streaming app
 
 This project is inspired in this [article](https://www.linode.com/docs/guides/build-react-video-streaming-app/) for made video streaming with node-js of course for tath is need some requirements before using this app, also this app has 2 big modes with database (MongoDB), and without this, also have 4 branches in which one is a different version for a different purpose, we will talk more in detail later.
 
-**note:**This repo is for the development of the API, you can use this to deploy the server if you want, but if you want only to start the application I recommend using the repository with all compiled [repo with all](https://github.com/SL0W-HAND/node-stream).
+**note**:This repo is for the development of the API, you can use this to deploy the server if you want, but if you want only to start the application I recommend using the repository with all compiled [repo with all](https://github.com/SL0W-HAND/node-stream).
 
 ## Setup requirements step by step
 For some of these requirements, you need to search for your specific case, and I don't go show you how (sorry for that) but is very easily find the corresponding tutorial.
